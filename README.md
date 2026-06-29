@@ -14,15 +14,15 @@ Artemis Financial is a financial services company that had an existing Spring Bo
 
 ## What did you do well when you found your client's software security vulnerabilities? Why is it important to code securely? What value does software security add to a company's overall well-being?
 
-I think I did a good job picking the right tools for the job rather than trying to overcomplicate things. For the data verification piece, I went with SHA-256 because it's a well-established, NIST-recommended hashing algorithm — there was no reason to reinvent the wheel when Java already has a built-in `MessageDigest` class that handles it cleanly. For the HTTPS side, I used Java Keytool to generate the SSL certificate and configured a PKCS12 keystore, which is the current industry standard.
+I think I did a good job picking the right tools for the job rather than trying to overcomplicate things. For the data verification piece, I went with SHA-256 because it's a well-established, NIST-recommended hashing algorithm. There was no reason to reinvent the wheel when Java already has a built-in `MessageDigest` class that handles it cleanly. For the HTTPS side, I used Java Keytool to generate the SSL certificate and configured a PKCS12 keystore, which is the current industry standard.
 
-Coding securely matters a lot, especially for a company like Artemis Financial where people are trusting them with their money and personal information. If there's a breach, it's not just a technical problem — it can mean regulatory fines, lawsuits, and customers leaving. Building security in from the start is a lot cheaper and smarter than trying to patch it after something goes wrong.
+Coding securely matters a lot, especially for a company like Artemis Financial where people are trusting them with their money and personal information. If there's a breach, it's not just a technical problem but can mean regulatory fines, lawsuits, and customers leaving. Building security in from the start is a lot cheaper and smarter than trying to patch it after something goes wrong.
 
 ---
 
 ## Which part of the vulnerability assessment was challenging or helpful to you?
 
-Running the OWASP Dependency-Check report was probably the most eye-opening part. I knew going in that there might be some vulnerabilities in the third-party libraries, but seeing 92 vulnerabilities across 11 dependencies listed out was a little overwhelming at first. The helpful part was digging into the report and realizing that none of those vulnerabilities came from code I wrote — they all existed in the original project's dependencies like Spring Boot, Tomcat, and SnakeYAML. That helped me understand the difference between vulnerabilities you introduce yourself versus ones that come from libraries you're pulling in, and why it's important to scan regularly and keep dependencies updated.
+Running the OWASP Dependency-Check report was probably the most eye-opening part. I knew going in that there might be some vulnerabilities in the third-party libraries, but seeing 92 vulnerabilities across 11 dependencies listed out was a little overwhelming at first. The helpful part was digging into the report and realizing that none of those vulnerabilities came from code I wrote they all existed in the original project's dependencies like Spring Boot, Tomcat, and SnakeYAML. That helped me understand the difference between vulnerabilities you introduce yourself versus ones that come from libraries you're pulling in, and why it's important to scan regularly and keep dependencies updated.
 
 ---
 
@@ -36,7 +36,7 @@ Going forward, I'd continue using OWASP Dependency-Check as a first pass for fin
 
 ## How did you make certain the code and software application were functional and secure? After refactoring the code, how did you check to see whether you introduced new vulnerabilities?
 
-After I finished refactoring, I ran the OWASP Dependency-Check again as a secondary scan to make sure I hadn't introduced anything new. Since I only used Java's built-in security libraries (`MessageDigest` for SHA-256 and the standard SSL/TLS configuration), nothing new showed up — all 92 vulnerabilities were pre-existing in the original project's dependencies.
+After I finished refactoring, I ran the OWASP Dependency-Check again as a secondary scan to make sure I hadn't introduced anything new. Since I only used Java's built-in security libraries (`MessageDigest` for SHA-256 and the standard SSL/TLS configuration), nothing new showed up, all 92 vulnerabilities were pre-existing in the original project's dependencies.
 
 I also did a manual code review of `SslServerApplication.java`. The `/hash` endpoint doesn't take any user input, which eliminates injection risks entirely. There's no hardcoded sensitive data in the source files (the keystore password is in `application.properties` which wouldn't be committed to a public repo in a real project). I tested it by running the app in Eclipse and navigating to `https://localhost:8443/hash` in a browser to confirm the SHA-256 checksum was displaying correctly over an encrypted connection.
 
